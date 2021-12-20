@@ -40,6 +40,9 @@ function onDataReceived(text) {
   else if(text === 'hello\n'){
     hello();
   }
+  else if(text === 'help\n'){
+    help();
+  }
   else{
     unknownCommand(text);
   }
@@ -65,6 +68,12 @@ function unknownCommand(c){
  */
 function hello(){
   console.log('hello!')
+}
+
+
+
+function help(){
+  console.log ('The command line you can use are:\nhello\nquit, exit\nhelp\n');
 }
 
 
