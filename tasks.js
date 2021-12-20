@@ -71,7 +71,10 @@ function hello(){
 }
 
 
-
+/** 
+lists all the possible commands
+@returns {void}
+*/
 function help(){
   console.log ('The command line you can use are:\nhello\nquit, exit\nhelp\n');
 }
