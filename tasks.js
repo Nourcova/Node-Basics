@@ -65,9 +65,11 @@ function unknownCommand(c){
 
 
 /**
- * Says hello
+ * Says hello! if you write hello
+ * Says hello "your name"! if you write hello "your name"
  *
  * @returns {void}
+ * @param {string} name the name to put after hello
  */
 function hello(name){
   if (name){
