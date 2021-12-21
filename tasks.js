@@ -34,25 +34,24 @@ let tasks = ['Shop', 'Read Books', 'Paint the walls'];
  * @returns {void}
  */
 function onDataReceived(text) {
+  let text2=text.trim();
   if (text === 'quit\n' || text === 'exit\n') {
     quit();
   }
-  else if (text.trim().split(" ")[0] === 'hello\n') {
-    hello("");
+  else if (text2.split(" ")[0] ==="hello"){
+    hello(text2);
   }
-  else if (text.trim().split(" ")[0] === 'hello' && text.split(" ")[1] !== []) {
-    hello(text.trim().split(" ").slice(1).join(',').replace(',', ' '));
-  }
+
   else if (text === 'help\n') {
     help();
   }
   else if (text === 'list\n') {
     list();
   }
-  else if (text.trim().split(" ")[0] === 'add' && text.split(' ')[1] !== []) {
+  else if (text.trim().split(" ")[0] === 'add' && text.split(' ')[1] !== "") {
     add(text.trim().split(' ').slice(1).join(',').replace(',', ' '));
   }
-  else if (text.trim().split(" ")[0] === 'remove' && text.split(' ')[1] !== []) {
+  else if (text.trim().split(" ")[0] === 'remove' && text.split(' ')[1] !== "") {
     remove(text.trim().split(' ')[1])
   }
   else {
@@ -81,14 +80,11 @@ function unknownCommand(c) {
  * @returns {void}
  * @param {string} name the name to put after hello
  */
-
-function hello(name) {
-  if (name) {
-    console.log(`hello ${name}!`)
-  }
-  else {
+function hello(name){
+  if(name === "hello")
     console.log('hello!')
-  }
+  else
+    console.log(`${name}!`)
 }
 
 
@@ -99,9 +95,13 @@ function hello(name) {
  */
 
 function list() {
-  tasks.map((x, index) => {
-    console.log(`${index + 1}- ${x}`);
-  })
+  if (tasks!==[]) {
+    tasks.map((x, index) => {
+      console.log(`${index + 1}- ${x}`);
+    })
+  }
+  else 
+    console.log("the list is empty");
 }
 
 
@@ -123,8 +123,11 @@ function add(task) {
  * @param {string} n removes the nth element from the list. If n is not passed, it removes the last element
  */
 function remove(index) {
-  if (index) {
+  if (index <= tasks.length ) {
     tasks.splice(index - 1, 1);
+  }
+  else if (index > tasks.length || index <= 0) {
+    console.log("choose a good number")
   }
   else
     tasks.pop();
