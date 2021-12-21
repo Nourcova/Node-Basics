@@ -136,7 +136,7 @@ lists all the possible commands
 @returns {void}
 */
 function help() {
-  console.log('The command line you can use are:\nhello\nhello "your name"\nadd "task"\nquit, exit\nhelp\n');
+  console.log('The command line you can use are:\nhello\nhello "your name"\nadd "task"\nremove\nremove "index"\nquit, exit\nhelp\n');
 }
 
 
