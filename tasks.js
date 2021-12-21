@@ -17,7 +17,7 @@ function startApp(name){
   console.log("--------------------")
 }
 
-
+let tasks=['Shop', 'Read Books', 'Paint the walls'];
 /**
  * Decides what to do depending on the data that was received
  * This function receives the input sent by the user.
@@ -45,6 +45,9 @@ function onDataReceived(text) {
   }
   else if(text === 'help\n'){
     help();
+  }
+  else if(text === 'list\n'){
+    list();
   }
   else{
     unknownCommand(text);
@@ -80,6 +83,17 @@ function hello(name){
   }
 }
 
+/**
+ * Lists all the tasks
+ * 
+ * @returns {void}
+ */
+
+function list(){
+  tasks.map((x,index) => {
+    console.log(`${index+1}- ${x}`);
+  })
+}
 
 /** 
 lists all the possible commands
