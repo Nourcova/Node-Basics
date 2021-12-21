@@ -9,7 +9,7 @@
  * @param  {string} name the name of the app
  * @returns {void}
  */
-function startApp(name){
+function startApp(name) {
   process.stdin.resume();
   process.stdin.setEncoding('utf8');
   process.stdin.on('data', onDataReceived);
@@ -17,7 +17,7 @@ function startApp(name){
   console.log("--------------------")
 }
 
-let tasks=['Shop', 'Read Books', 'Paint the walls'];
+let tasks = ['Shop', 'Read Books', 'Paint the walls'];
 /**
  * Decides what to do depending on the data that was received
  * This function receives the input sent by the user.
@@ -37,19 +37,25 @@ function onDataReceived(text) {
   if (text === 'quit\n' || text === 'exit\n') {
     quit();
   }
-  else if(text.trim().split(" ")[0] === 'hello\n'){
+  else if (text.trim().split(" ")[0] === 'hello\n') {
     hello("");
   }
-  else if(text.trim().split(" ")[0] === 'hello' && text.split(" ")[1] !== []){
-    hello(text.trim().split(" ").slice(1).join(',').replace(',',' '));
+  else if (text.trim().split(" ")[0] === 'hello' && text.split(" ")[1] !== []) {
+    hello(text.trim().split(" ").slice(1).join(',').replace(',', ' '));
   }
-  else if(text === 'help\n'){
+  else if (text === 'help\n') {
     help();
   }
-  else if(text === 'list\n'){
+  else if (text === 'list\n') {
     list();
   }
-  else{
+  else if (text.trim().split(" ")[0] === 'add' && text.split(' ')[1] !== []) {
+    add(text.trim().split(' ').slice(1).join(',').replace(',', ' '));
+  }
+  else if (text.trim().split(" ")[0] === 'remove' && text.split(' ')[1] !== []) {
+    remove(text.trim().split(' ')[1])
+  }
+  else {
     unknownCommand(text);
   }
 }
@@ -62,8 +68,9 @@ function onDataReceived(text) {
  * @param  {string} c the text received
  * @returns {void}
  */
-function unknownCommand(c){
-  console.log('unknown command: "'+c.trim()+'"')
+
+function unknownCommand(c) {
+  console.log('unknown command: "' + c.trim() + '"')
 }
 
 
@@ -74,14 +81,16 @@ function unknownCommand(c){
  * @returns {void}
  * @param {string} name the name to put after hello
  */
-function hello(name){
-  if (name){
+
+function hello(name) {
+  if (name) {
     console.log(`hello ${name}!`)
   }
-  else{
-    console.log ('hello!')
+  else {
+    console.log('hello!')
   }
 }
+
 
 /**
  * Lists all the tasks
@@ -89,18 +98,45 @@ function hello(name){
  * @returns {void}
  */
 
-function list(){
-  tasks.map((x,index) => {
-    console.log(`${index+1}- ${x}`);
+function list() {
+  tasks.map((x, index) => {
+    console.log(`${index + 1}- ${x}`);
   })
+}
+
+
+/**
+ * Adds a task to the list of tasks
+ * 
+ * @returns {void}
+ * @param {string} task the task we want to add to the list 
+ */
+function add(task) {
+  tasks.push(task)
+  list();
+}
+
+/**
+ * Removes a task from the list of tasks 
+ * 
+ * @returns {void}
+ * @param {string} n removes the nth element from the list. If n is not passed, it removes the last element
+ */
+function remove(index) {
+  if (index) {
+    tasks.splice(index - 1, 1);
+  }
+  else
+    tasks.pop();
+  list();
 }
 
 /** 
 lists all the possible commands
 @returns {void}
 */
-function help(){
-  console.log ('The command line you can use are:\nhello\nhello "your name"\nquit, exit\nhelp\n');
+function help() {
+  console.log('The command line you can use are:\nhello\nhello "your name"\nadd "task"\nquit, exit\nhelp\n');
 }
 
 
@@ -109,7 +145,7 @@ function help(){
  *
  * @returns {void}
  */
-function quit(){
+function quit() {
   console.log('Quitting now, goodbye!')
   process.exit();
 }
