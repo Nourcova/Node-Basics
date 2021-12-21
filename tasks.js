@@ -86,7 +86,7 @@ lists all the possible commands
 @returns {void}
 */
 function help(){
-  console.log ('The command line you can use are:\nhello\nquit, exit\nhelp\n');
+  console.log ('The command line you can use are:\nhello\nhello "your name"\nquit, exit\nhelp\n');
 }
 
 
