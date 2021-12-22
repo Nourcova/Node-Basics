@@ -14,20 +14,38 @@ let tasks = [
 ];
 
 const fs = require('fs')
+let jsonDatabase = "";
+
+if (process.argv[2]===undefined) {
+  jsonDatabase = 'database.json';
+}
+else {
+  jsonDatabase = process.argv[2];
+}
 const saveData = () => {
   try {
-    fs.writeFileSync("database.json", JSON.stringify(tasks, null, 4))
+    fs.writeFileSync(`${jsonDatabase}`, JSON.stringify(tasks, null, 4))
     console.log("file written successfully");
   } catch (err) {
     console.error(err)
   }
 }
-const readData = () => {
-  try {
-    const data = fs.readFileSync('database.json', 'utf8')
-    tasks= JSON.parse(data);
-  } catch (err) {
-    console.error(err)
+const readData = (value) => {
+  if (value === 'default') {
+    try {
+      const data = fs.readFileSync('database.json', 'utf8')
+      tasks = JSON.parse(data);
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  else {
+    try {
+      const data = fs.readFileSync(`${value}`, 'utf8')
+      tasks = JSON.parse(data);
+    } catch (err) {
+      console.error(err)
+    }
   }
 }
 /**
@@ -46,8 +64,12 @@ function startApp(name) {
   process.stdin.on('data', onDataReceived);
   console.log(`Welcome to ${name}'s application!`)
   console.log("--------------------")
-  readData();
+  if (process.argv[2] === undefined)
+    readData('default');
+  else
+    readData(process.argv[2])
 }
+
 
 
 /**
