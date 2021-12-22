@@ -1,4 +1,35 @@
+let tasks = [
+  {
+    'task': 'Sleep',
+    'done': false,
+  },
+  {
+    'task': 'Read Books',
+    'done': true,
+  },
+  {
+    'task': 'Paint the walls',
+    'done': false,
+  },
+];
 
+const fs = require('fs')
+const saveData = () => {
+  try {
+    fs.writeFileSync("database.json", JSON.stringify(tasks, null, 4))
+    console.log("file written successfully");
+  } catch (err) {
+    console.error(err)
+  }
+}
+const readData = () => {
+  try {
+    const data = fs.readFileSync('database.json', 'utf8')
+    tasks= JSON.parse(data);
+  } catch (err) {
+    console.error(err)
+  }
+}
 /**
  * Starts the application
  * This is the function that is run when the app starts
@@ -15,22 +46,10 @@ function startApp(name) {
   process.stdin.on('data', onDataReceived);
   console.log(`Welcome to ${name}'s application!`)
   console.log("--------------------")
+  readData();
 }
 
-let tasks = [
-  {
-    'task': 'Sleep',
-    'done': false,
-  },
-  {
-    'task': 'Read Books',
-    'done': true,
-  },
-  {
-    'task': 'Paint the walls',
-    'done': false,
-  },
-];
+
 /**
  * Decides what to do depending on the data that was received
  * This function receives the input sent by the user.
@@ -49,6 +68,7 @@ let tasks = [
 function onDataReceived(text) {
   let text2 = text.trim();
   if (text === 'quit\n' || text === 'exit\n') {
+    saveData()
     quit();
   }
   else if (text2.split(" ")[0] === "hello") {
@@ -189,6 +209,9 @@ function edit(index) {
       list();
     }
   }
+  // if (isNaN(index.split(" ")[1])){
+  //   tasks[tasks.length-1]=(index.slice(5));
+  // }
 }
 
 /**
@@ -215,7 +238,7 @@ function check(index) {
  * @param {index}
  * 
  */
- function uncheck(index) {
+function uncheck(index) {
   if (index.length === 7 || index.split(" ")[1] > tasks.length)
     console.log("Please choose a existing task");
   else
