@@ -54,6 +54,10 @@ function onDataReceived(text) {
   else if (text.trim().split(" ")[0] === 'remove' && text.split(' ')[1] !== "") {
     remove(text.trim().split(' ')[1])
   }
+  else if (text2.split(" ")[0] === "edit"){
+    edit(text2);
+  }
+
   else {
     unknownCommand(text);
   }
@@ -133,6 +137,31 @@ function remove(index) {
     tasks.pop();
   list();
 }
+
+/**
+ * Edits a the nth task if n is specified.
+ * Edits the last task if n is not defined
+ * 
+ * @returns {void}
+ * @param {string} index the index of the task to edit
+ */
+function edit(index){
+  if (index.length===4 || index.split(" ")[1]>tasks.length){
+    console.log("Please specify a task to edit");
+    list();
+  }
+  else if (index){
+    if (isNaN(parseInt(index.split(" ")[1]))){
+      tasks[tasks.length-1] = index.split(" ")[1];
+      list();
+    }
+    else{
+      tasks[index.split(" ")[1]-1] = index.split(" ").slice(2).join(' ');
+      list();
+    }
+  }
+}
+
 
 /** 
 lists all the possible commands
