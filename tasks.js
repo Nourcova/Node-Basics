@@ -17,7 +17,20 @@ function startApp(name) {
   console.log("--------------------")
 }
 
-let tasks = ['Shop', 'Read Books', 'Paint the walls'];
+let tasks = [
+  {
+    'task': 'Sleep',
+    'done': false,
+  },
+  {
+    'task': 'Read Books',
+    'done': true,
+  },
+  {
+    'task': 'Paint the walls',
+    'done': false,
+  },
+];
 /**
  * Decides what to do depending on the data that was received
  * This function receives the input sent by the user.
@@ -34,11 +47,11 @@ let tasks = ['Shop', 'Read Books', 'Paint the walls'];
  * @returns {void}
  */
 function onDataReceived(text) {
-  let text2=text.trim();
+  let text2 = text.trim();
   if (text === 'quit\n' || text === 'exit\n') {
     quit();
   }
-  else if (text2.split(" ")[0] ==="hello"){
+  else if (text2.split(" ")[0] === "hello") {
     hello(text2);
   }
 
@@ -54,7 +67,7 @@ function onDataReceived(text) {
   else if (text.trim().split(" ")[0] === 'remove' && text.split(' ')[1] !== "") {
     remove(text.trim().split(' ')[1])
   }
-  else if (text2.split(" ")[0] === "edit"){
+  else if (text2.split(" ")[0] === "edit") {
     edit(text2);
   }
 
@@ -84,8 +97,8 @@ function unknownCommand(c) {
  * @returns {void}
  * @param {string} name the name to put after hello
  */
-function hello(name){
-  if(name === "hello")
+function hello(name) {
+  if (name === "hello")
     console.log('hello!')
   else
     console.log(`${name}!`)
@@ -99,12 +112,15 @@ function hello(name){
  */
 
 function list() {
-  if (tasks!==[]) {
+  if (tasks !== []) {
     tasks.map((x, index) => {
-      console.log(`${index + 1}- ${x}`);
+      if (x.done === false)
+        console.log(`[ ] ${index + 1}- ${x.task}`);
+      else
+        console.log(`[✓] ${index + 1}- ${x.task}`);
     })
   }
-  else 
+  else
     console.log("the list is empty");
 }
 
@@ -116,7 +132,10 @@ function list() {
  * @param {string} task the task we want to add to the list 
  */
 function add(task) {
-  tasks.push(task)
+  tasks.push({
+    'task': task,
+    'done': false,
+  })
   list();
 }
 
@@ -127,7 +146,7 @@ function add(task) {
  * @param {string} n removes the nth element from the list. If n is not passed, it removes the last element
  */
 function remove(index) {
-  if (index <= tasks.length ) {
+  if (index <= tasks.length) {
     tasks.splice(index - 1, 1);
   }
   else if (index > tasks.length || index <= 0) {
@@ -145,18 +164,18 @@ function remove(index) {
  * @returns {void}
  * @param {string} index the index of the task to edit
  */
-function edit(index){
-  if (index.length===4 || index.split(" ")[1]>tasks.length){
+function edit(index) {
+  if (index.length === 4 || index.split(" ")[1] > tasks.length) {
     console.log("Please specify a task to edit");
     list();
   }
-  else if (index){
-    if (isNaN(parseInt(index.split(" ")[1]))){
-      tasks[tasks.length-1] = index.split(" ")[1];
+  else if (index) {
+    if (isNaN(parseInt(index.split(" ")[1]))) {
+      tasks[tasks.length - 1] = index.split(" ")[1];
       list();
     }
-    else{
-      tasks[index.split(" ")[1]-1] = index.split(" ").slice(2).join(' ');
+    else {
+      tasks[index.split(" ")[1] - 1] = index.split(" ").slice(2).join(' ');
       list();
     }
   }
