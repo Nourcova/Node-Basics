@@ -70,6 +70,13 @@ function onDataReceived(text) {
   else if (text2.split(" ")[0] === "edit") {
     edit(text2);
   }
+  else if (text2.split(" ")[0] === "check") {
+    check(text2);
+  }
+  else if (text2.split(" ")[0] === "uncheck") {
+    uncheck(text2);
+  }
+
 
   else {
     unknownCommand(text);
@@ -132,10 +139,13 @@ function list() {
  * @param {string} task the task we want to add to the list 
  */
 function add(task) {
-  tasks.push({
-    'task': task,
-    'done': false,
-  })
+  if (task)
+    tasks.push({
+      'task': task,
+      'done': false,
+    })
+  else
+    console.log("please specify what do you want to add");
   list();
 }
 
@@ -181,13 +191,43 @@ function edit(index) {
   }
 }
 
+/**
+ * 
+ * Checks the indexed task
+ * 
+ * @returns {void}
+ * @param {index}
+ * 
+ */
+function check(index) {
+  if (index.length === 5 || index.split(" ")[1] > tasks.length)
+    console.log("Please choose a existing task");
+  else
+    tasks[index.split(" ")[1] - 1].done = true;
+  list()
+}
 
+/**
+ * 
+ * Uncheck the indexed task
+ * 
+ * @returns {void}
+ * @param {index}
+ * 
+ */
+ function uncheck(index) {
+  if (index.length === 7 || index.split(" ")[1] > tasks.length)
+    console.log("Please choose a existing task");
+  else
+    tasks[index.split(" ")[1] - 1].done = false;
+  list()
+}
 /** 
 lists all the possible commands
 @returns {void}
 */
 function help() {
-  console.log('The command line you can use are:\nhello\nhello "your name"\nadd "task"\nremove\nremove "index"\nquit, exit\nhelp\n');
+  console.log('The command line you can use are:\nhello\nhello "your name"\nadd\nadd "task"\nremove\nremove "index"\nquit, exit\nhelp\n');
 }
 
 
