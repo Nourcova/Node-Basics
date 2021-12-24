@@ -96,18 +96,17 @@ function onDataReceived(text) {
   else if (text2.split(" ")[0] === "hello") {
     hello(text2);
   }
-
   else if (text === 'help\n') {
     help();
   }
   else if (text === 'list\n') {
     list();
   }
-  else if (text.trim().split(" ")[0] === 'add' && text.split(' ')[1] !== "") {
-    add(text.trim().split(' ').slice(1).join(',').replace(',', ' '));
+  else if (text2.split(" ")[0]=== 'add'){
+    add(text2);
   }
-  else if (text.trim().split(" ")[0] === 'remove' && text.split(' ')[1] !== "") {
-    remove(text.trim().split(' ')[1])
+  else if (text2.split(" ")[0]==='remove'){
+    remove(text2)
   }
   else if (text2.split(" ")[0] === "edit") {
     edit(text2);
@@ -180,12 +179,14 @@ function list() {
  * @returns {void}
  * @param {string} task the task we want to add to the list 
  */
+
 function add(task) {
-  if (task)
+  if (task.split(' ')[1]){
     tasks.push({
-      'task': task,
-      'done': false,
+      'task':task.slice(4),
+      'done':false
     })
+  }
   else
     console.log("please specify what do you want to add");
   list();
@@ -197,18 +198,20 @@ function add(task) {
  * @returns {void}
  * @param {string} n removes the nth element from the list. If n is not passed, it removes the last element
  */
-function remove(index) {
-  if (index <= tasks.length) {
-    tasks.splice(index - 1, 1);
+
+function remove (index){
+  if (index.split(' ')[1]){
+    if (index.split(' ')[1] <= tasks.length)
+      tasks.splice(index.split(' ')[1]-1,1)
+    else
+      console.log("choose a good number")    
   }
-  else if (index > tasks.length || index <= 0) {
-    console.log("choose a good number")
-  }
+
   else
-    tasks.pop();
+    tasks.pop()
+
   list();
 }
-
 /**
  * Edits a the nth task if n is specified.
  * Edits the last task if n is not defined
@@ -223,11 +226,12 @@ function edit(index) {
   }
   else if (index) {
     if (isNaN(parseInt(index.split(" ")[1]))) {
-      tasks[tasks.length - 1] = index.split(" ")[1];
+      tasks[tasks.length - 1].task = index.split(" ")[1];
       list();
     }
+
     else {
-      tasks[index.split(" ")[1] - 1] = index.split(" ").slice(2).join(' ');
+      tasks[index.split(" ")[1] - 1].task = index.split(" ").slice(2).join(' ');
       list();
     }
   }
