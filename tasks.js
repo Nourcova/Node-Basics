@@ -1,22 +1,35 @@
-let tasks = [
-  {
-    'task': 'Sleep',
-    'done': false,
-  },
-  {
-    'task': 'Read Books',
-    'done': true,
-  },
-  {
-    'task': 'Paint the walls',
-    'done': false,
-  },
-];
-
+// let tasks = [
+//   {
+//     'task': 'Sleep',
+//     'done': false,
+//   },
+//   {
+//     'task': 'Read Books',
+//     'done': true,
+//   },
+//   {
+//     'task': 'Paint the walls',
+//     'done': false,
+//   },
+// ];
+let tasks = [];
+const cmdList = [
+  '\x1b[36mhello:\x1b[0m Returns hello!',
+  '\x1b[36mhello "your name":\x1b[0m Returns your name!',
+  '\x1b[36madd "task":\x1b[0m Adds a task to the TODO list',
+  '\x1b[36mremove:\x1b[0m Removes the last task from the TODO list',
+  '\x1b[36mremove "index":\x1b[0m Removes the indexed task from the TODO list',
+  '\x1b[36medit "new-task":\x1b[0m Edits the last task from the TODO list',
+  '\x1b[36medit "index new-task":\x1b[0m Edits the indexed task from the TODO list',
+  '\x1b[36mcheck "index":\x1b[0m Checks the indexed task Done',
+  '\x1b[36muncheck "index":\x1b[0m Unchecks the indexed task ',
+  '\x1b[36mquit\\exit :\x1b[0m Exits the application ',
+  '\x1b[36mhelp:\x1b[0m Gives the list of command available',
+]
 const fs = require('fs')
 let jsonDatabase = "";
 
-if (process.argv[2]===undefined) {
+if (process.argv[2] === undefined) {
   jsonDatabase = 'database.json';
 }
 else {
@@ -24,10 +37,10 @@ else {
 }
 const saveData = () => {
   try {
-    fs.writeFileSync(`${jsonDatabase}`, JSON.stringify(tasks, null, 4))
-    console.log("file written successfully");
-  } catch (err) {
-    console.error(err)
+    fs.writeFileSync(jsonDatabase, JSON.stringify(tasks, null, 4))
+    console.log(`file written successfully in ${jsonDatabase}`);
+  } catch (error) {
+    console.error("error")
   }
 }
 const readData = (value) => {
@@ -35,19 +48,20 @@ const readData = (value) => {
     try {
       const data = fs.readFileSync('database.json', 'utf8')
       tasks = JSON.parse(data);
-    } catch (err) {
-      console.error(err)
+    } catch (error) {
+      console.error("error")
     }
   }
   else {
     try {
-      const data = fs.readFileSync(`${value}`, 'utf8')
+      const data = fs.readFileSync(value, 'utf8')
       tasks = JSON.parse(data);
-    } catch (err) {
-      console.error(err)
+    } catch (error) {
+      console.error("\x1b[33mThis JSON file doesn't exist, start adding tasks to it\x1b[0m")
     }
   }
 }
+
 /**
  * Starts the application
  * This is the function that is run when the app starts
@@ -62,14 +76,14 @@ function startApp(name) {
   process.stdin.resume();
   process.stdin.setEncoding('utf8');
   process.stdin.on('data', onDataReceived);
-  console.log(`Welcome to ${name}'s application!`)
-  console.log("--------------------")
+  console.log(`\n------------------------------\nWelcome to ${name}'s application!\nThis is \x1b[33m${jsonDatabase}\x1b[0m database`)
+  console.log("------------------------------\n")
+  console.log("Type \x1b[34m'help'\x1b[0m to see all the available commands")
   if (process.argv[2] === undefined)
     readData('default');
   else
     readData(process.argv[2])
 }
-
 
 
 /**
@@ -89,23 +103,23 @@ function startApp(name) {
  */
 function onDataReceived(text) {
   let text2 = text.trim();
-  if (text === 'quit\n' || text === 'exit\n') {
-    saveData()
+  if (text2 === 'quit' || text2 === 'exit') {
+    saveData();
     quit();
   }
   else if (text2.split(" ")[0] === "hello") {
     hello(text2);
   }
-  else if (text === 'help\n') {
+  else if (text2 === 'help') {
     help();
   }
-  else if (text === 'list\n') {
+  else if (text2 === 'list') {
     list();
   }
-  else if (text2.split(" ")[0]=== 'add'){
+  else if (text2.split(" ")[0] === 'add') {
     add(text2);
   }
-  else if (text2.split(" ")[0]==='remove'){
+  else if (text2.split(" ")[0] === 'remove') {
     remove(text2)
   }
   else if (text2.split(" ")[0] === "edit") {
@@ -134,7 +148,7 @@ function onDataReceived(text) {
  */
 
 function unknownCommand(c) {
-  console.log('unknown command: "' + c.trim() + '"')
+  console.log('unknown command: "' + c.trim() + '"\n')
 }
 
 
@@ -147,9 +161,9 @@ function unknownCommand(c) {
  */
 function hello(name) {
   if (name === "hello")
-    console.log('hello!')
+    console.log(`\x1b[33mhello!\x1b[0m\n`)
   else
-    console.log(`${name}!`)
+    console.log(`\x1b[33m${name}!\x1b[0m\n`)
 }
 
 
@@ -163,13 +177,14 @@ function list() {
   if (tasks !== []) {
     tasks.map((x, index) => {
       if (x.done === false)
-        console.log(`[ ] ${index + 1}- ${x.task}`);
+        console.log(`${index + 1}: [ ] ${x.task}`);
       else
-        console.log(`[✓] ${index + 1}- ${x.task}`);
+        console.log(`${index + 1}: [\x1b[32m✓\x1b[0m] ${x.task}`);
     })
   }
   else
-    console.log("the list is empty");
+    console.log("The list is empty");
+  console.log("");
 }
 
 
@@ -181,14 +196,15 @@ function list() {
  */
 
 function add(task) {
-  if (task.split(' ')[1]){
+  if (task.split(' ')[1]) {
     tasks.push({
-      'task':task.slice(4),
-      'done':false
+      'task': task.slice(4),
+      'done': false
     })
+    console.log(`The task \x1b[32m${task.slice(4)}\x1b[0m has been \x1b[36madded\x1b[0m successfully`)
   }
   else
-    console.log("please specify what do you want to add");
+    console.log("Please specify what do you want to add");
   list();
 }
 
@@ -199,17 +215,20 @@ function add(task) {
  * @param {string} n removes the nth element from the list. If n is not passed, it removes the last element
  */
 
-function remove (index){
-  if (index.split(' ')[1]){
-    if (index.split(' ')[1] <= tasks.length)
-      tasks.splice(index.split(' ')[1]-1,1)
+function remove(index) {
+  if (index.split(' ')[1]) {
+    if (index.split(' ')[1] <= tasks.length) {
+      console.log(`The task \x1b[31m${tasks[parseInt(index.split(" ").slice(1)) - 1].task}\x1b[0m has been \x1b[36mremoved\x1b[0m successfully`)
+      tasks.splice(index.split(' ')[1] - 1, 1)
+
+    }
     else
-      console.log("choose a good number")    
+      console.log("choose a good number")
   }
 
-  else
-    tasks.pop()
-
+  else {
+    console.log(`The task \x1b[31m${tasks.pop().task}\x1b[0m has been \x1b[36mremoved\x1b[0m successfully`)
+  }
   list();
 }
 /**
@@ -226,11 +245,15 @@ function edit(index) {
   }
   else if (index) {
     if (isNaN(parseInt(index.split(" ")[1]))) {
+      let before = tasks[tasks.length - 1].task
+      console.log(`The task \x1b[35m${before}\x1b[0m was \x1b[36medited\x1b[0m successfully to \x1b[32m${index.split(" ").slice(1).join(' ')}\x1b[0m`)
       tasks[tasks.length - 1].task = index.split(" ")[1];
       list();
     }
 
     else {
+      let before = tasks[index.split(" ")[1] - 1].task
+      console.log(`The task \x1b[35m${before}\x1b[0m was \x1b[36medited\x1b[0m successflully to \x1b[32m${index.split(" ").slice(2).join(' ')}\x1b[0m`);
       tasks[index.split(" ")[1] - 1].task = index.split(" ").slice(2).join(' ');
       list();
     }
@@ -251,8 +274,16 @@ function edit(index) {
 function check(index) {
   if (index.length === 5 || index.split(" ")[1] > tasks.length)
     console.log("Please choose a existing task");
-  else
-    tasks[index.split(" ")[1] - 1].done = true;
+  else {
+    let before = tasks[index.split(" ")[1] - 1].task
+    if (tasks[index.split(" ")[1] - 1].done === false) {
+      console.log(`The task \x1b[32m${before}\x1b[0m was \x1b[36mchecked\x1b[0m successfully`);
+      tasks[index.split(" ")[1] - 1].done = true;
+    }
+    else {
+      console.log(`The task \x1b[31m${before}\x1b[0m is alreday \x1b[36mchecked\x1b[0m`);
+    }
+  }
   list()
 }
 
@@ -267,8 +298,16 @@ function check(index) {
 function uncheck(index) {
   if (index.length === 7 || index.split(" ")[1] > tasks.length)
     console.log("Please choose a existing task");
-  else
-    tasks[index.split(" ")[1] - 1].done = false;
+  else {
+    let before = tasks[index.split(" ")[1] - 1].task
+    if (tasks[index.split(" ")[1] - 1].done === true) {
+      console.log(`The task \x1b[32m${before}\x1b[0m was \x1b[36munchecked\x1b[0m successfully`);
+      tasks[index.split(" ")[1] - 1].done = false;
+    }
+    else{
+      console.log(`The task \x1b[31m${before}\x1b[0m is alreday \x1b[36munchecked\x1b[0m`);
+    }
+  }
   list()
 }
 /** 
@@ -276,8 +315,12 @@ lists all the possible commands
 @returns {void}
 */
 function help() {
-  console.log('The command line you can use are:\nhello\nhello "your name"\nadd\nadd "task"\nremove\nremove "index"check "index"\nuncheck "index"\nquit, exit\nhelp\n');
-}
+  console.log(`The command line you can use are:\n`);
+  cmdList.map(
+    x => console.log(`${x}`))
+  console.log('')
+};
+
 
 
 /**
